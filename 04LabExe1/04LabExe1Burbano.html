@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>04 Laboratory 1 - Burbano</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red: #e63946;
+            --yellow: #ffd60a;
+            --navy: #1d3557;
+            --light: #f1faee;
+            --blue: #457b9d;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--light);
+            color: var(--navy);
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: var(--navy);
+            color: var(--white);
+            padding: 1.2rem 2rem;
+            text-align: center;
+            border-bottom: 5px solid var(--yellow);
+            position: relative;
+        }
+        header h1 {
+            font-family: 'Bangers', cursive;
+            font-size: 2.8rem;
+            letter-spacing: 2px;
+            color: var(--yellow);
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+        }
+        header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #a8c6df;
+            margin-top: 0.2rem;
+            letter-spacing: 1px;
+        }
+
+        /* ── NAV ── */
+        nav {
+            background: var(--red);
+            padding: 0.8rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+        nav p {
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 800;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        nav ul li a {
+            display: inline-block;
+            text-decoration: none;
+            background: var(--yellow);
+            color: var(--navy);
+            font-weight: 800;
+            font-size: 0.95rem;
+            padding: 0.45rem 1.1rem;
+            border-radius: 6px;
+            border: 3px solid var(--navy);
+            box-shadow: 3px 3px 0 var(--navy);
+            transition:
+                transform 0.15s cubic-bezier(.34,1.56,.64,1),
+                box-shadow 0.15s,
+                background 0.2s,
+                color 0.2s;
+            /* track visited/clicked via JS class */
+        }
+        nav ul li a:hover {
+            transform: scale(1.18) translateY(-3px);
+            box-shadow: 5px 5px 0 var(--navy);
+        }
+        /* clicked state toggled by JS */
+        nav ul li a.clicked {
+            background: var(--navy);
+            color: var(--yellow);
+            border-color: var(--yellow);
+            box-shadow: 3px 3px 0 var(--yellow);
+        }
+
+        /* ── MAIN / CARD HOLDER ── */
+        main {
+            padding: 2.5rem 2rem;
+        }
+        .card-holder {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--white);
+            border: 3px solid var(--navy);
+            border-radius: 14px;
+            box-shadow: 6px 6px 0 var(--navy);
+            overflow: hidden;
+            cursor: pointer;
+            transition:
+                transform 0.2s cubic-bezier(.34,1.56,.64,1),
+                box-shadow 0.2s;
+            position: relative;
+        }
+        .card:hover {
+            transform: scale(1.04) translateY(-6px) rotate(-1deg);
+            box-shadow: 10px 10px 0 var(--navy);
+        }
+
+        /* IMAGE SWAP container */
+        .img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background: #dde8f0;
+        }
+        .img-wrapper img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.4s ease;
+        }
+        /* img-a = default visible, img-b = swapped on hover */
+        .img-wrapper .img-a { opacity: 1; }
+        .img-wrapper .img-b { opacity: 0; }
+        .card:hover .img-wrapper .img-a { opacity: 0; }
+        .card:hover .img-wrapper .img-b { opacity: 1; }
+
+        /* placeholder when no real image */
+        .img-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            background: linear-gradient(135deg, #a8c6df 0%, #457b9d 100%);
+        }
+
+        .card-label {
+            padding: 1rem 1.2rem;
+            text-align: center;
+        }
+        .card-label h3 {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            letter-spacing: 1.5px;
+            color: var(--navy);
+        }
+        .card-label p {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.2rem;
+        }
+
+        /* Hamster card accent */
+        .card:nth-child(1) { border-color: var(--red); box-shadow: 6px 6px 0 var(--red); }
+        .card:nth-child(1):hover { box-shadow: 10px 10px 0 var(--red); }
+        .card:nth-child(1) .card-label h3 { color: var(--red); }
+
+        /* Gayabs card accent */
+        .card:nth-child(2) { border-color: var(--blue); box-shadow: 6px 6px 0 var(--blue); }
+        .card:nth-child(2):hover { box-shadow: 10px 10px 0 var(--blue); }
+        .card:nth-child(2) .card-label h3 { color: var(--blue); }
+
+        /* ── LIGHTBOX / MODAL (click to enlarge) ── */
+        #modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeOverlay 0.25s ease;
+        }
+        #modal-overlay.active { display: flex; }
+
+        @keyframes fadeOverlay {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        #modal-box {
+            background: var(--white);
+            border: 4px solid var(--navy);
+            border-radius: 16px;
+            box-shadow: 12px 12px 0 var(--navy);
+            max-width: 520px;
+            width: 90%;
+            overflow: hidden;
+            animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1);
+        }
+        @keyframes popIn {
+            from { transform: scale(0.6); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
+        }
+
+        #modal-img-wrap {
+            width: 100%;
+            height: 300px;
+            background: #dde8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        #modal-img-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+        #modal-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+        }
+
+        #modal-body {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        #modal-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.4rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.4rem;
+        }
+        #modal-desc {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        #modal-close {
+            background: var(--red);
+            color: var(--white);
+            border: 3px solid var(--navy);
+            box-shadow: 3px 3px 0 var(--navy);
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        #modal-close:hover {
+            transform: scale(1.06);
+            box-shadow: 5px 5px 0 var(--navy);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem 2rem;
+            border-top: 5px solid var(--yellow);
+            margin-top: 2rem;
+        }
+        footer h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            color: var(--yellow);
+            letter-spacing: 1.5px;
+        }
+        footer p {
+            font-size: 0.85rem;
+            color: #a8c6df;
+            margin-top: 0.3rem;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .card-holder { grid-template-columns: 1fr; }
+            header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>04 Laboratory 1</h1>
+        <h2>Burbano, Victor — BT 3203</h2>
+    </header>
+
+    <nav>
+        <p>Sino mas angat?</p>
+        <ul>
+            <li><a href="#sect1" class="nav-link">Hamster</a></li>
+            <li><a href="#sect2" class="nav-link">Gayabs</a></li>
+            <li><a href="#footer" class="nav-link">Footer</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="card-holder">
+
+            <!-- CARD 1: Hamster -->
+            <article class="card"
+                data-title="Hamster"
+                data-desc="Ang hamster na siyang nagmamayabang sa lahat. Sino mas angat?"
+                data-emoji="🐹"
+                data-img-a="Pictures/hamster.jpg"
+                data-img-b=""
+            >
+                <div class="img-wrapper">
+                    <!-- img-a = hamster photo, img-b = placeholder swap -->
+                    <div class="img-placeholder" id="hamster-placeholder-a">🐹</div>
+                    <img class="img-a" src="Pictures/hamster.jpg" alt="Hamster"
+                         onerror="this.style.display='none'" />
+                    <img class="img-b" src="" alt="Dad"
+                         onerror="this.style.display='none'" />
+                    <div class="img-placeholder img-b" style="background:linear-gradient(135deg,#ffd60a,#e63946); opacity:0; transition:opacity 0.4s;">👨</div>
+                </div>
+                <div class="card-label">
+                    <h3 id="sect1">Hamster</h3>
+                    <p>Hover to swap · Click to enlarge</p>
+                </div>
+            </article>
+
+            <!-- CARD 2: Gayabs -->
+            <article class="card"
+                data-title="Gayabs"
+                data-desc="Si Netoy, ang Bisayang kumag na kumag. Sino mas angat talaga?"
+                data-emoji="😎"
+                data-img-a="Pictures/NetoyKumag.jpg"
+                data-img-b=""
+            >
+                <div class="img-wrapper">
+                    <div class="img-placeholder" id="netoy-placeholder-a" style="background:linear-gradient(135deg,#457b9d,#1d3557);">😎</div>
+                    <img class="img-a" src="Pictures/NetoyKumag.jpg" alt="BisayangKumag"
+                         onerror="this.style.display='none'" />
+                    <img class="img-b" src="" alt="Gayabs"
+                         onerror="this.style.display='none'" />
+                    <div class="img-placeholder img-b" style="background:linear-gradient(135deg,#1d3557,#ffd60a); opacity:0; transition:opacity 0.4s;">🤣</div>
+                </div>
+                <div class="card-label">
+                    <h3 id="sect2">Gayabs</h3>
+                    <p>Hover to swap · Click to enlarge</p>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+    <footer id="footer">
+        <h2>Sino mas angat?</h2>
+        <p>Copyright 2024 · Burbano, Victor · BT 3203</p>
+    </footer>
+
+    <!-- MODAL LIGHTBOX -->
+    <div id="modal-overlay">
+        <div id="modal-box">
+            <div id="modal-img-wrap">
+                <div id="modal-placeholder"></div>
+                <img id="modal-img" src="" alt="" onerror="this.style.display='none'" />
+            </div>
+            <div id="modal-body">
+                <div id="modal-title"></div>
+                <p id="modal-desc"></p>
+                <button id="modal-close">✕ Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── NAV: click toggles color ──
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function () {
+                // toggle: if already clicked, un-click; else click and un-click others
+                const wasClicked = this.classList.contains('clicked');
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('clicked'));
+                if (!wasClicked) this.classList.add('clicked');
+            });
+        });
+
+        // ── CARD: click opens modal ──
+        const overlay = document.getElementById('modal-overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc  = document.getElementById('modal-desc');
+        const modalImg   = document.getElementById('modal-img');
+        const modalPlaceholder = document.getElementById('modal-placeholder');
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function () {
+                const title = this.dataset.title;
+                const desc  = this.dataset.desc;
+                const emoji = this.dataset.emoji;
+                const imgSrc = this.dataset.imgA;
+
+                modalTitle.textContent = title;
+                modalDesc.textContent  = desc;
+                modalPlaceholder.textContent = emoji;
+                modalImg.src = imgSrc || '';
+                modalImg.alt = title;
+
+                overlay.classList.add('active');
+            });
+        });
+
+        // ── MODAL: close on button or overlay click ──
+        document.getElementById('modal-close').addEventListener('click', closeModal);
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeModal();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        function closeModal() {
+            overlay.classList.remove('active');
+        }
+
+        // ── CARD image-swap: CSS handles opacity, but fix placeholder divs too ──
+        document.querySelectorAll('.card').forEach(card => {
+            const placeholderBs = card.querySelectorAll('.img-placeholder.img-b');
+            card.addEventListener('mouseenter', () => {
+                placeholderBs.forEach(p => p.style.opacity = '1');
+            });
+            card.addEventListener('mouseleave', () => {
+                placeholderBs.forEach(p => p.style.opacity = '0');
+            });
+        });
+    </script>
+</body>
+</html>
