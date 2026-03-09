@@ -142,7 +142,7 @@
         .img-wrapper {
             position: relative;
             width: 100%;
-            aspect-ratio: 4 / 3;
+            aspect-ratio: 4 / 4.4;
             overflow: hidden;
             background: #dde8f0;
         }
@@ -200,6 +200,10 @@
         .card:nth-child(2) { border-color: var(--blue); box-shadow: 6px 6px 0 var(--blue); }
         .card:nth-child(2):hover { box-shadow: 10px 10px 0 var(--blue); }
         .card:nth-child(2) .card-label h3 { color: var(--blue); }
+        .card:nth-child(2) .img-wrapper .img-a {
+            transform: scale(1.45, 1.15);
+            transform-origin: center;
+        }
 
         /* ── LIGHTBOX / MODAL (click to enlarge) ── */
         #modal-overlay {
