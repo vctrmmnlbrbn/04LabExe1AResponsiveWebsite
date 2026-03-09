@@ -111,6 +111,7 @@
         .card-holder {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            grid-auto-rows: 1fr;
             gap: 2rem;
             max-width: 900px;
             margin: 0 auto;
@@ -124,6 +125,9 @@
             box-shadow: 6px 6px 0 var(--navy);
             overflow: hidden;
             cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             transition:
                 transform 0.2s cubic-bezier(.34,1.56,.64,1),
                 box-shadow 0.2s;
@@ -138,7 +142,7 @@
         .img-wrapper {
             position: relative;
             width: 100%;
-            height: 220px;
+            aspect-ratio: 4 / 3;
             overflow: hidden;
             background: #dde8f0;
         }
@@ -170,6 +174,10 @@
         .card-label {
             padding: 1rem 1.2rem;
             text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .card-label h3 {
             font-family: 'Bangers', cursive;
@@ -216,8 +224,9 @@
             border: 4px solid var(--navy);
             border-radius: 16px;
             box-shadow: 12px 12px 0 var(--navy);
-            max-width: 520px;
-            width: 90%;
+            width: auto;
+            max-width: min(92vw, 900px);
+            max-height: 92vh;
             overflow: hidden;
             animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1);
         }
@@ -227,23 +236,29 @@
         }
 
         #modal-img-wrap {
-            width: 100%;
-            height: 300px;
+            width: auto;
             background: #dde8f0;
             position: relative;
-            overflow: hidden;
-        }
-        #modal-img-wrap img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-        }
-        #modal-placeholder {
-            position: absolute;
-            inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 6rem;
+            overflow: hidden;
+        }
+        #modal-img-wrap img {
+            display: block;
+            width: auto;
+            height: auto;
+            max-width: min(92vw, 900px);
+            max-height: 70vh;
+            object-fit: contain;
+        }
+        #modal-placeholder {
+            width: min(92vw, 900px);
+            min-height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(3rem, 10vw, 6rem);
         }
 
         #modal-body {
@@ -327,19 +342,19 @@
         <div class="card-holder">
 
             <!-- CARD 1: Hamster -->
-            <article class="card".
+            <article class="card"
                 data-title="Hamster"
                 data-desc="Ang hamster na siyang nagmamayabang sa lahat. Sino mas angat?"
-                data-emoji="🐹"
+                data-emoji=""
                 data-img-a="Pictures/hamster.jpg"
-                data-img-b=""
+                data-img-b="Pictures/waplo.jpg"
             >
                 <div class="img-wrapper">
                     <!-- img-a = hamster photo, img-b = placeholder swap -->
                     <div class="img-placeholder" id="hamster-placeholder-a">🐹</div>
-                    <img class="img-a" src="Pictures\hamster.jpg" alt="Hamster"
+                    <img class="img-a" src="Pictures/hamster.jpg" alt="Hamster"
                          onerror="this.style.display='none'" />
-                    <img class="img-b" src="" alt="Dad"
+                    <img class="img-b" src="Pictures/waplo.jpg" alt="Dad"
                          onerror="this.style.display='none'" />
                     <div class="img-placeholder img-b" style="background:linear-gradient(135deg,#ffd60a,#e63946); opacity:0; transition:opacity 0.4s;">👨</div>
                 </div>
@@ -354,14 +369,14 @@
                 data-title="Gayabs"
                 data-desc="Si Netoy, ang Bisayang kumag na kumag. Sino mas angat talaga?"
                 data-emoji="😎"
-                data-img-a=""
-                data-img-b=""
+                data-img-a="Pictures/bayagnoyti.jpg"
+                data-img-b="Pictures/NetoyKumag.jpg"
             >
                 <div class="img-wrapper">
                     <div class="img-placeholder" id="netoy-placeholder-a" style="background:linear-gradient(135deg,#457b9d,#1d3557);">😎</div>
-                    <img class="img-a" src="" alt="BisayangKumag"
+                    <img class="img-a" src="Pictures/bayagnoyti.jpg" alt="BisayangKumag"
                          onerror="this.style.display='none'" />
-                    <img class="img-b" src="Pictures\NetoyKumag.jpg" alt="Gayabs"
+                    <img class="img-b" src="Pictures/NetoyKumag.jpg" alt="Gayabs"
                          onerror="this.style.display='none'" />
                     <div class="img-placeholder img-b" style="background:linear-gradient(135deg,#1d3557,#ffd60a); opacity:0; transition:opacity 0.4s;">🤣</div>
                 </div>
@@ -384,7 +399,7 @@
         <div id="modal-box">
             <div id="modal-img-wrap">
                 <div id="modal-placeholder"></div>
-                <img id="modal-img" src="" alt="" onerror="this.style.display='none'" />
+                <img id="modal-img" src="" alt="" onerror="this.style.display='none';document.getElementById('modal-placeholder').style.display='flex';" />
             </div>
             <div id="modal-body">
                 <div id="modal-title"></div>
@@ -417,16 +432,22 @@
                 const title = this.dataset.title;
                 const desc  = this.dataset.desc;
                 const emoji = this.dataset.emoji;
-                const imgSrc = this.dataset.imgA;
+                const imgSrc = this.dataset.imgB || '';
 
                 modalTitle.textContent = title;
                 modalDesc.textContent  = desc;
-                modalPlaceholder.textContent = emoji;
-                modalImg.src = imgSrc || '';
+                modalPlaceholder.textContent = emoji || 'NO IMAGE';
+                modalImg.style.display = 'block';
+                modalImg.src = imgSrc;
                 modalImg.alt = title;
+                modalPlaceholder.style.display = imgSrc ? 'none' : 'flex';
 
                 overlay.classList.add('active');
             });
+        });
+
+        modalImg.addEventListener('load', function () {
+            modalPlaceholder.style.display = 'none';
         });
 
         // ── MODAL: close on button or overlay click ──
